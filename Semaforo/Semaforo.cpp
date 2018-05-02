@@ -40,7 +40,7 @@ int Semaforo :: p() const {
   operacion.sem_flg = SEM_UNDO;
 
   int resultado = semop(this->id, &operacion, 1);
-  if (resultado < 0) {
+  if ((resultado < 0) && (errno != EINTR)) {
     cerr << "Error al efectuar la operacion p sobre el semaforo: " << strerror(errno) << endl;
   }
   return resultado;
@@ -54,7 +54,7 @@ int Semaforo :: v() const {
   operacion.sem_flg = SEM_UNDO;
 
   int resultado = semop(this->id, &operacion, 1);
-  if (resultado < 0) {
+  if ((resultado < 0) && (errno != EINTR)) {
     cerr << "Error al efectuar la operacion v sobre el semaforo: " << strerror(errno) << endl;
   }
   return resultado;

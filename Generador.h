@@ -12,12 +12,13 @@
 #include "Fifo/FifoEscritura.h"
 #include "Seniales/SIGINT_Handler.h"
 #include "Seniales/SignalHandler.h"
+#include "Semaforo/Semaforo.h"
 #include "Logger.h"
 #include "Personas/Turista.h"
 #include "Personas/Residente.h"
 #include "Personas/Empleado.h"
 #define PORCENTAJE_RESIDENTE 60
-#define TAM 25
+#define ARCHIVO_SELLOS "main.cpp"
 using namespace std;
 
 class Generador {
@@ -26,7 +27,7 @@ public:
   Generador();
   ~Generador();
 
-  void generarEmpleados(int cantidad);
+  void generarEmpleados(int cantidadEmpleados, int cantidadSellos);
   void generarPersonas();
   int comunicarResidenteEmpleado(Residente r, FifoEscritura fifo);
   int comunicarTuristaEmpleado(Turista t, FifoEscritura fifo);

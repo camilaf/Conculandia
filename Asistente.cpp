@@ -9,11 +9,14 @@ Asistente :: Asistente() {
 Asistente :: ~Asistente () {
 }
 
+/* Ejecuta el menu principal con las opciones para consultar la cantidad
+  de turistas que ingresaron o que fueron deportados y la cantidad de
+  residentes que fueron detenidos. */
 void Asistente ::iniciarMenu() {
-  int opcion;
+  int opcion = 0;
   cout << endl;
   cout << "BIENVENIDOS A LA OFICINA DE MIGRACIONES DE CONCULANDIA!" << endl << endl;
-  while(opcion != 4) {
+  while (opcion != 4) {
     cout << "** Menu Principal **: Elija entre las siguientes opciones:" << endl << endl;
     cout << "- Ingrese 1 para consultar la cantidad de turistas extranjeros deportados" << endl;
     cout << "- Ingrese 2 para consultar la cantidad de turistas extranjeros que ingresaron al pais" << endl;
@@ -41,6 +44,12 @@ void Asistente ::iniciarMenu() {
   }
 }
 
+int Asistente :: crearListadoPersonasDeRiesgo() {
+  return m.crearListado();
+}
+
+/* Verifica que los argumentos de entrada sean validos: cantidad de ventanillas y sellos.
+  Devuelve -1 si son incorrectos, y 0 en caso contrario. */
 int Asistente :: verificarArgumentos(int argc, char *argv[]) {
   this->debug = false;
   if (argc < CANT_MIN_PARAMETROS) {
@@ -88,6 +97,10 @@ int Asistente :: inicializarContadoresConsultas() {
 
 int Asistente :: obtenerCantidadVentanillas() {
   return this->ventanillas;
+}
+
+int Asistente :: obtenerCantidadSellos() {
+  return this->sellos;
 }
 
 int Asistente :: consultarTuristasDeportados() {

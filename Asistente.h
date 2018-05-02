@@ -9,6 +9,7 @@
 #include "Logger.h"
 #include "MemoriaCompartida/MemoriaCompartida.h"
 #include "Contadores.h"
+#include "Entidades/Ministro.h"
 #define CANT_MIN_PARAMETROS 5
 using namespace std;
 
@@ -18,6 +19,7 @@ private:
   int sellos;
   bool debug;
   Contadores c;
+  Ministro m;
 
 public:
   Asistente();
@@ -26,7 +28,9 @@ public:
   void iniciarMenu();
   int verificarArgumentos(int argc, char *argv[]);
   int inicializarContadoresConsultas();
+  int crearListadoPersonasDeRiesgo();
   int obtenerCantidadVentanillas();
+  int obtenerCantidadSellos();
   int consultarTuristasDeportados();
   int consultarTuristasIngresados();
   int consultarResidentesDetenidos();

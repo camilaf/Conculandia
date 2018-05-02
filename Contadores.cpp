@@ -6,6 +6,9 @@ Contadores :: Contadores() {
 Contadores :: ~Contadores() {
 }
 
+/* Crea una memoria compartida para cada contador: cantidad de turistas
+  deportados e ingresados, y la cantidad de residentes que fueron llevados
+  a la Oficina de Policia. Devuelve -1 en caso de error, y 0 en caso contrario.*/
 int Contadores :: crearContadores() {
   Logger :: getInstance()->registrar("Creando la memoria compartida para cada contador");
   int estadoDetenidos = this->residentesDetenidos.crear("/bin/bash", 'D', sizeof(int));
@@ -29,6 +32,7 @@ int Contadores :: crearContadores() {
   return 0;
 }
 
+/* Inicializa los contadores en cero. Devuelve -1 en caso de error, y 0 en caso contrario. */
 int Contadores :: inicializarContadores() {
   if (this->crearContadores() < 0) {
     Logger :: getInstance()->registrar("Error al crear la memoria compartida para consultas");
@@ -57,18 +61,20 @@ int Contadores :: cantidadTuristasDeportados() {
     }
     cerr << "Error al tomar el lock: " << strerror(errno) << endl;
   }
+
   Logger :: getInstance()->registrar("Se consultan los turistas deportados en la memoria compartida");
   int resultado = this->turistasDeportados.leer();
+
   char buffer[sizeof(resultado)];
   sprintf(buffer, "%d", resultado);
   Logger :: getInstance()->registrar("Lee cantidad de turistas deportados: " + string(buffer));
+
   if (lock.liberarLock() < 0) {
     if (errno == EINTR) {
       exit(0);
     }
     cerr << "Error al liberar el lock: " << strerror(errno) << endl;
   }
-
   this->desadosarContadores();
   return resultado;
 }
@@ -88,9 +94,11 @@ int Contadores :: cantidadTuristasIngresados() {
   }
   Logger :: getInstance()->registrar("Se consultan los turistas ingresados en la memoria compartida");
   int resultado = this->turistasIngresados.leer();
+
   char buffer[sizeof(resultado)];
   sprintf(buffer, "%d", resultado);
   Logger :: getInstance()->registrar("Lee cantidad de turistas ingresados: " + string(buffer));
+
   if (lock.liberarLock() < 0) {
     if (errno == EINTR) {
       exit(0);
@@ -114,11 +122,14 @@ int Contadores :: cantidadResidentesDetenidos() {
     }
     cerr << "Error al tomar el lock: " << strerror(errno) << endl;
   }
+
   Logger :: getInstance()->registrar("Se consultan los residentes detenidos en la memoria compartida");
   int resultado = residentesDetenidos.leer();
+
   char buffer[sizeof(resultado)];
   sprintf(buffer, "%d", resultado);
   Logger :: getInstance()->registrar("Lee cantidad de residentes detenidos: " + string(buffer));
+
   if (lock.liberarLock() < 0) {
     if (errno == EINTR) {
       exit(0);
@@ -142,15 +153,19 @@ void Contadores :: incrementarTuristasDeportados() {
     }
     cerr << "Error al tomar el lock: " << strerror(errno) << endl;
   }
+
   Logger :: getInstance()->registrar("Se incrementan los turistas deportados en la memoria compartida");
   int resultado = turistasDeportados.leer();
+
   int nuevo = resultado + 1;
   char resBuffer[sizeof(resultado)];
   sprintf(resBuffer, "%d", resultado);
+
   char nuevoBuffer[sizeof(nuevo)];
   sprintf(nuevoBuffer, "%d", nuevo);
   Logger :: getInstance()->registrar("Cambia cantidad de turistas deportados: " + string(resBuffer) + " por cantidad " + string(nuevoBuffer));
   turistasDeportados.escribir(nuevo);
+
   if (lock.liberarLock() < 0) {
     if (errno == EINTR) {
       exit(0);
@@ -175,13 +190,16 @@ void Contadores :: incrementarTuristasIngresados() {
   }
   Logger :: getInstance()->registrar("Se incrementan los turistas ingresados en la memoria compartida");
   int resultado = turistasIngresados.leer();
+
   int nuevo = resultado + 1;
   char resBuffer[sizeof(resultado)];
   sprintf(resBuffer, "%d", resultado);
+
   char nuevoBuffer[sizeof(nuevo)];
   sprintf(nuevoBuffer, "%d", nuevo);
   Logger :: getInstance()->registrar("Cambia cantidad de turistas ingresados: " + string(resBuffer) + " por cantidad " + string(nuevoBuffer));
   turistasIngresados.escribir(nuevo);
+
   if (lock.liberarLock() < 0) {
     if (errno == EINTR) {
       exit(0);
@@ -206,13 +224,16 @@ void Contadores :: incrementarResidentesDetenidos() {
   }
   Logger :: getInstance()->registrar("Se incrementan los residentes detenidos en la memoria compartida");
   int resultado = residentesDetenidos.leer();
+
   int nuevo = resultado + 1;
   char resBuffer[sizeof(resultado)];
   sprintf(resBuffer, "%d", resultado);
+
   char nuevoBuffer[sizeof(nuevo)];
   sprintf(nuevoBuffer, "%d", nuevo);
   Logger :: getInstance()->registrar("Cambia cantidad de residentes detenidos: " + string(resBuffer) + " por cantidad " + string(nuevoBuffer));
   residentesDetenidos.escribir(nuevo);
+  
   if (lock.liberarLock() < 0) {
     if (errno == EINTR) {
       exit(0);

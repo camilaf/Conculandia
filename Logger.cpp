@@ -8,7 +8,7 @@ bool Logger :: modoDebug = false;
 Logger :: Logger() {
   this->fd = open(LOGFILE, O_WRONLY | O_CREAT, 0644);
   if (this->fd < 0) {
-    cerr << "open() failure: " << strerror(errno) << endl;
+    cerr << "Error al abrir el log: " << strerror(errno) << endl;
   }
 }
 
@@ -46,9 +46,11 @@ void Logger :: registrar(string mensaje) {
     char buffer[TIMESTAMP_SIZE];
     time_t now = time(0);
     strftime(buffer, TIMESTAMP_SIZE, "[ %Y-%m-%d %H:%M:%S ] ", localtime(&now));
+
     mensaje = string(buffer) + mensaje + "\n";
     lseek(this->fd, 0, SEEK_END);
     write(this->fd, mensaje.c_str(), mensaje.length());
+
     if (lock.liberarLock() < 0) {
       if (errno == EINTR) {
         exit(0);

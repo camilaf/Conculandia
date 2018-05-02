@@ -13,6 +13,8 @@ class Residente {
 private:
   int numeroDocumento;
   string genero;
+  void asignarDocumento();
+  void asignarGenero();
 
 public:
   Residente();

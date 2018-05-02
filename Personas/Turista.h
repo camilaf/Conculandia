@@ -20,6 +20,8 @@ class Turista {
 private:
   string rasgos[CANT_TIPOS];
   int numeroPasaporte;
+  void asignarRasgos();
+  void asignarPasaporte();
 
 public:
 
@@ -27,7 +29,6 @@ public:
   ~Turista();
   int obtenerNumeroPasaporte();
   string obtenerRasgos();
-
 };
 
 #endif /* TURISTA_H_ */
