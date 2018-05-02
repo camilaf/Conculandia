@@ -10,8 +10,9 @@ Empleado :: ~Empleado () {
   Lee del FifoLectura y lo almacena en el buffer. Devuelve -1
   si la lectura fue interrumpida por una senial. */
 int Empleado :: recibirMensaje(char *buffer, FifoLectura fifo) {
-  if (fifo.leer(static_cast<void *> (buffer), BUFFSIZE) < 0) {
-    if (errno == EINTR) {
+  ssize_t bytesLeidos = fifo.leer(static_cast<void *> (buffer), BUFFSIZE);
+  if (bytesLeidos <= 0) {
+    if ((errno == EINTR) || (bytesLeidos == 0)) {
       return -1;
     }
     cerr << "Error al leer del fifo: " << strerror(errno) << endl;
@@ -23,8 +24,9 @@ int Empleado :: recibirMensaje(char *buffer, FifoLectura fifo) {
   Escribe el mensaje en el FifoEscritura y devuelve -1
   si la escritura fue interrumpida por una senial. */
 int Empleado :: enviarMensaje(string mensaje, FifoEscritura fifo) {
-  if (fifo.escribir(mensaje.c_str(), mensaje.length()) < 0) {
-    if (errno == EINTR) {
+  ssize_t bytesEscritos = fifo.escribir(mensaje.c_str(), mensaje.length());
+  if (bytesEscritos <= 0) {
+    if ((errno == EINTR) || (bytesEscritos == 0)) {
       return -1;
     }
     cerr << "Error al escribir en el fifo de la persona: " << strerror(errno) << endl;

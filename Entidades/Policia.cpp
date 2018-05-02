@@ -80,10 +80,11 @@ int Policia :: enviarAlerta(FifoEscritura fifoAlertas) {
 
   string mensaje = indicacion + "-" + rasgo + "-";
   Logger :: getInstance()->registrar("La policia envia la alerta " + mensaje);
-  
+
   // Enviamos la alerta
-  if (fifoAlertas.escribir(mensaje.c_str(), mensaje.length()) < 0) {
-    if (errno == EINTR) {
+  ssize_t bytesEscritos = fifoAlertas.escribir(mensaje.c_str(), mensaje.length());
+  if (bytesEscritos <= 0) {
+    if ((errno == EINTR) || (bytesEscritos == 0)) {
       return -1;
     }
     cerr << "Error al escribir en el fifo de alertas: " << strerror(errno) << endl;

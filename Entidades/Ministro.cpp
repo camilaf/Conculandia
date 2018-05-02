@@ -19,8 +19,9 @@ void Ministro :: esperarAlertas() {
   while (sigint_handler.getGracefulQuit() == 0) {
     char buffer[BUFFSIZE];
     // Lee la siguiente alerta
-    if (fifoAlertas.leer(static_cast<void *> (buffer), BUFFSIZE) < 0) {
-      if (errno == EINTR) {
+    ssize_t bytesLeidos = fifoAlertas.leer(static_cast<void *> (buffer), BUFFSIZE);
+    if (bytesLeidos <= 0) {
+      if ((errno == EINTR) || (bytesLeidos == 0)) {
         break;
       }
       cerr << "Error al leer del fifo: " << strerror(errno) << endl;
@@ -34,7 +35,6 @@ void Ministro :: esperarAlertas() {
       this->agregarRasgo(rasgo);
     }
     else {
-      cout << "Elimino " << string(rasgo) << endl;
       this->quitarRasgo(rasgo);
     }
     memset(buffer, 0, BUFFSIZE);
